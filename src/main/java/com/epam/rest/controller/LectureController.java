@@ -4,18 +4,19 @@ import com.epam.rest.model.Lecture;
 import com.epam.rest.model.Topic;
 import com.epam.rest.service.LectureService;
 import com.epam.rest.service.TopicService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api
 @RestController
+@RequestMapping(value = "/lectures")
 public class LectureController {
 
     @Autowired
@@ -24,9 +25,10 @@ public class LectureController {
     @Autowired
     protected TopicService topicService;
 
-    @RequestMapping(value = "/lectures", method = RequestMethod.GET,
+    @ApiOperation(value = "")
+    @RequestMapping(method = RequestMethod.GET,
     produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<Lecture>> getLecture(){
+    public ResponseEntity<List<Lecture>> getLectures(){
         List<Lecture> lectures = lectureService.getLectures();
 
         if(lectures == null || lectures.isEmpty()){
@@ -35,9 +37,11 @@ public class LectureController {
 
         return new ResponseEntity<List<Lecture>>(lectures, HttpStatus.OK);
     }
-    @RequestMapping(value = "/lecture/{id}", method = RequestMethod.GET,
+
+    @ApiOperation(value = "", notes = "get Lecture by Id")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Lecture> getLectureByID(@PathVariable("id") Integer id){
+    public ResponseEntity<Lecture> getLectureById(@RequestParam Integer id){
         Lecture lecture = lectureService.getLectureById(id);
 
         if(lecture == null ){
@@ -47,9 +51,10 @@ public class LectureController {
         return new ResponseEntity<Lecture>(lecture, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/lecture/{id}/topics", method = RequestMethod.GET,
+    @ApiOperation(value = "")
+    @RequestMapping(value = "/{id}/topics", method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<Topic>> getTopicsByLectureId(@PathVariable("id") Integer id){
+    public ResponseEntity<List<Topic>> getTopicsByLectureId(@RequestParam Integer id){
         Lecture lecture = lectureService.getLectureById(id);
 
         if(lecture == null || lecture.getTopicList() == null || lecture.getTopicList().isEmpty()){
@@ -59,10 +64,11 @@ public class LectureController {
         return new ResponseEntity<>(lecture.getTopicList(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/lecture/{id}/topic/{idTopic}", method = RequestMethod.GET,
+    @ApiOperation(value = "")
+    @RequestMapping(value = "/{id}/topics/{idTopic}", method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Topic> getTopicByLectureIdAndTopicId(@PathVariable("id") Integer id,
-                                                      @PathVariable ("idTopic" )Integer idTopic){
+    public ResponseEntity<Topic> getTopicById(@RequestParam Integer id,
+                                                      @RequestParam Integer idTopic){
         Lecture lecture = lectureService.getLectureById(id);
 
         Topic topic = null;
